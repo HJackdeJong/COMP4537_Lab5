@@ -16,15 +16,22 @@ insertButton.addEventListener("click", insertRows);
 submitButton.addEventListener("click", handleUserQuery);
 
 insertButton.textContent = MESSAGES.insertButtontext;
-submitButton.textContent = MESSAGES.submitButtontext;
+submitButton.textContent = MESSAGES.submitButtonText;
 
 async function insertRows() {
   const query = QUERIES.insertQuery;
 
   try {
     const response = await sendQueryPostRequest(POST_URL, query);
-    const responseData = await response.json();
-    displayResponse(responseData.message || MESSAGES.successfullInsert);
+    
+    if (response.ok) { 
+      const responseData = await response.json();
+      displayResponse(responseData.message || MESSAGES.successfullInsert);
+    } else {
+      const errorMessage = await response.text();
+      displayResponse(`Error: ${errorMessage}`);
+    }
+    
   } catch (error) {
     displayResponse(`Error: ${error.message}`);
   }
