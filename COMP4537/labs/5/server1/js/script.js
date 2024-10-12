@@ -3,7 +3,7 @@
 
 // import {messages} from "COMP4537/lab/5/server1/lang/messages/en/en.js";
 
-import { MESSAGES, QUERIES } from "./lang/en/userInfo.js";
+import { MESSAGES, QUERIES } from "../lang/messages/en/user.js";
 const POST_URL = "https://leewillin.store/lab5/api/v1/sql";
 const GET_URL = "https://leewillin.store/lab5/api/v1/sql?query=";
 
@@ -87,8 +87,9 @@ async function fetchData(url) {
     } else {
       resultTable.innerHTML = MESSAGES.noDataMessage;
     }
-  } catch (error) {
-    resultTable.innerHTML = MESSAGES.fetchError;
+} catch (error) {
+    const errorMessage = MESSAGES.fetchError.replace('%ERROR%', error.message);
+    resultTable.innerHTML = errorMessage;
   }
 }
 

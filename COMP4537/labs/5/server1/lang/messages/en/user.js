@@ -4,8 +4,8 @@ export const MESSAGES = {
     missingQuery: "Please enter a query",
     successfullInsert: 'Rows inserted successfully',
     noDataMessage: '<tr><td>No data available<td><tr>',
-    fetchError: `<p style="color:red;">Error: ${error.message}</p>`,
-}
+    fetchError: '<p style="color:red;">Error: %ERROR%</p>',
+};
 
 export const QUERIES = {
     insertQuery: `INSERT INTO patient (name, birthdate) VALUES
