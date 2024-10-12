@@ -23,20 +23,19 @@ async function insertRows() {
 
   try {
     const response = await sendQueryPostRequest(POST_URL, query);
-    
-    if (response.ok) { 
+
+    if (response.ok) {
       const responseData = await response.json();
-      displayResponse(responseData.message || MESSAGES.successfullInsert);
+      const successMessage = `${MESSAGES.successFullInsert}\n${MESSAGES.serverMessage}: ${responseData.message}`;
+      displayResponse(successMessage);
     } else {
       const errorMessage = await response.text();
       displayResponse(`Error: ${errorMessage}`);
     }
-    
   } catch (error) {
     displayResponse(`Error: ${error.message}`);
   }
 }
-
 async function handleUserQuery() {
   const query = sqlQueryInput.value.trim();
 
@@ -49,17 +48,16 @@ async function handleUserQuery() {
     await handleSelectQuery(query);
   } else if (query.toUpperCase().startsWith("INSERT")) {
     await handleInsertQuery(query);
+  } else {
+    displayResponse(MESSAGES.illegalQuery);
   }
-  // else {
-  //     displayResponse("Only SELECT and INSERT queries are supported.");
-  // }
 }
 
 async function handleSelectQuery(query) {
-  const encodedQuery = encodeURIComponent(query); 
+  const encodedQuery = encodeURIComponent(query);
   const selectUrl = `${GET_URL}${encodedQuery}`;
 
-    await fetchData(selectUrl);
+  await fetchData(selectUrl);
 }
 
 async function handleInsertQuery(query) {
@@ -94,8 +92,8 @@ async function fetchData(url) {
     } else {
       resultTable.innerHTML = MESSAGES.noDataMessage;
     }
-} catch (error) {
-    const errorMessage = MESSAGES.fetchError.replace('%ERROR%', error.message);
+  } catch (error) {
+    const errorMessage = MESSAGES.fetchError.replace("%ERROR%", error.message);
     resultTable.innerHTML = errorMessage;
   }
 }
@@ -111,7 +109,7 @@ function populateTable(data) {
   if (data.length === 0) {
     resultTable.innerHTML = MESSAGES.noDataMessage;
     return;
-}
+  }
   let headerRow = "<tr>";
   headers.forEach((header) => {
     headerRow += `<th style="border: 1px solid #ddd; padding: 8px;">${header}</th>`;

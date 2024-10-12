@@ -2,7 +2,10 @@ export const MESSAGES = {
     insertButtontext: "Insert Test Rows",
     submitButtonText: "Submit",
     missingQuery: "Please enter a query",
-    successfullInsert: 'Rows inserted successfully',
+    successFullInsert: 'Rows inserted successfully!',
+    rowsAffected: "Rows affected",
+    serverMessage: "Server message",
+    illegalQuery: "Query must begin with SELECT or INSERT",
     noDataMessage: '<tr><td>No data available<td><tr>',
     fetchError: '<p style="color:red;">Error: %ERROR%</p>',
 };
