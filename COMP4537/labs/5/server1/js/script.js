@@ -98,8 +98,12 @@ function displayResponse(message) {
 
 function populateTable(data) {
   resultTable.innerHTML = "";
-
   const headers = Object.keys(data[0]);
+
+  if (data.length === 0) {
+    resultTable.innerHTML = MESSAGES.noDataMessage;
+    return;
+}
   let headerRow = "<tr>";
   headers.forEach((header) => {
     headerRow += `<th style="border: 1px solid #ddd; padding: 8px;">${header}</th>`;
