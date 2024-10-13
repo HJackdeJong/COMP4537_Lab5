@@ -1,8 +1,6 @@
 // This project was created with the assistance of ChatGPT model 3.5
 // in editing code and providing feedback
 
-// import {messages} from "COMP4537/lab/5/server1/lang/messages/en/en.js";
-
 import { MESSAGES, QUERIES } from "../lang/messages/en/user.js";
 const POST_URL = "https://leewillin.store/lab5/api/v1/sql";
 const GET_URL = "https://leewillin.store/lab5/api/v1/sql?query=";
@@ -64,7 +62,7 @@ async function handleInsertQuery(query) {
   try {
     const response = await sendQueryPostRequest(POST_URL, query);
     const responseData = await response.json();
-    displayResponse(responseData.message || "Query executed successfully.");
+    displayResponse(responseData.message || MESSAGES.successfullQuery);
   } catch (error) {
     displayResponse(`Error: ${error.message}`);
   }

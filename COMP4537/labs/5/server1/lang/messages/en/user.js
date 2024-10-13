@@ -3,6 +3,7 @@ export const MESSAGES = {
     submitButtonText: "Submit",
     missingQuery: "Please enter a query",
     successFullInsert: 'Rows inserted successfully!',
+    successfullQuery: 'Query executed successfully!',
     rowsAffected: "Rows affected",
     serverMessage: "Server message",
     illegalQuery: "Query must begin with SELECT or INSERT",
