@@ -2,13 +2,16 @@ export const MESSAGES = {
     insertButtontext: "Insert Test Rows",
     submitButtonText: "Submit",
     missingQuery: "Please enter a query",
+    noMessage:'No Message',
     successFullInsert: 'Rows inserted successfully!',
     successfullQuery: 'Query executed successfully!',
     rowsAffected: "Rows affected",
-    serverMessage: "Server message",
+    serverMessage: "Full Server Response:",
     illegalQuery: "Query must begin with SELECT or INSERT",
-    noDataMessage: '<tr><td>No data available<td><tr>',
-    fetchError: '<p style="color:red;">Error: %ERROR%</p>',
+    noDataMessage: 'No data available',
+    httpError: `HTTP error! status: %STATUS%`,
+    error: 'Error:',
+    errorDetails: '%ERROR%',
 };
 
 export const QUERIES = {

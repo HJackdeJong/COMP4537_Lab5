@@ -9,6 +9,8 @@ const insertButton = document.getElementById("insertRowsButton");
 const sqlQueryInput = document.getElementById("sqlQueryInput");
 const submitButton = document.getElementById("submitButton");
 const resultTable = document.getElementById("resultTable");
+const responseText = document.getElementById("responseText");
+const responseMessage = document.getElementById("responseMessage");
 
 insertButton.addEventListener("click", insertRows);
 submitButton.addEventListener("click", handleUserQuery);
@@ -17,23 +19,38 @@ insertButton.textContent = MESSAGES.insertButtontext;
 submitButton.textContent = MESSAGES.submitButtonText;
 
 async function insertRows() {
-  const query = QUERIES.insertQuery;
+    const query = QUERIES.insertQuery;
+    await processInsertQuery(query);
+  }
 
+async function processInsertQuery(query) {
   try {
     const response = await sendQueryPostRequest(POST_URL, query);
 
-    if (response.ok) {
-      const responseData = await response.json();
-      const successMessage = `${MESSAGES.successFullInsert}\n${MESSAGES.serverMessage}: ${responseData.message}`;
-      displayResponse(successMessage);
+    if (!response.ok) {
+        throw new Error(MESSAGES.httpError.replace('%STATUS%', response.status));
+      }
+
+    let responseData;
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      responseData = await response.json();
     } else {
-      const errorMessage = await response.text();
-      displayResponse(`Error: ${errorMessage}`);
+      responseData = await response.text();
     }
+
+    const responseString =
+      typeof responseData === "object"
+        ? JSON.stringify(responseData, null, 2)
+        : responseData;
+
+    displayResponse(MESSAGES.serverMessage , responseString);
   } catch (error) {
-    displayResponse(`Error: ${error.message}`);
+    displayResponse(MESSAGES.error, error.message);
   }
 }
+
 async function handleUserQuery() {
   const query = sqlQueryInput.value.trim();
 
@@ -45,7 +62,7 @@ async function handleUserQuery() {
   if (query.toUpperCase().startsWith("SELECT")) {
     await handleSelectQuery(query);
   } else if (query.toUpperCase().startsWith("INSERT")) {
-    await handleInsertQuery(query);
+    await processInsertQuery(query);
   } else {
     displayResponse(MESSAGES.illegalQuery);
   }
@@ -56,16 +73,6 @@ async function handleSelectQuery(query) {
   const selectUrl = `${GET_URL}${encodedQuery}`;
 
   await fetchData(selectUrl);
-}
-
-async function handleInsertQuery(query) {
-  try {
-    const response = await sendQueryPostRequest(POST_URL, query);
-    const responseData = await response.json();
-    displayResponse(responseData.message || MESSAGES.successfullQuery);
-  } catch (error) {
-    displayResponse(`Error: ${error.message}`);
-  }
 }
 
 async function sendQueryPostRequest(url, query) {
@@ -84,24 +91,42 @@ async function fetchData(url) {
       method: "GET",
     });
 
+    if (!response.ok) {
+      throw new Error(MESSAGES.httpError.replace('%STATUS%', response.status));
+    }
+
     const responseData = await response.json();
     if (responseData.length > 0) {
       populateTable(responseData);
     } else {
-      resultTable.innerHTML = MESSAGES.noDataMessage;
+      displayResponse(MESSAGES.noDataMessage);
     }
   } catch (error) {
-    const errorMessage = MESSAGES.fetchError.replace("%ERROR%", error.message);
-    resultTable.innerHTML = errorMessage;
+    displayResponse(
+      MESSAGES.error,
+      MESSAGES.errorDetails.replace("%ERROR%", error.message)
+    );
   }
 }
 
-function displayResponse(message) {
-  resultTable.innerHTML = message;
+function displayResponse(text, response = "") {
+  clearFields();
+  responseText.textContent = text;
+  responseMessage.textContent = response;
+}
+
+function clearFields() {
+  responseText.textContent = "";
+  responseMessage.textContent = "";
+  resultTable.innerHTML = "";
 }
 
 function populateTable(data) {
-  resultTable.innerHTML = "";
+  clearFields();
+  if (!data || data.length === 0) {
+    displayResponse(MESSAGES.noDataMessage);
+    return;
+  }
   const headers = Object.keys(data[0]);
 
   if (data.length === 0) {
